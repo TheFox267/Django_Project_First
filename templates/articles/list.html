@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load  static %}
+
+{% block title %}Статьи{% endblock %}
+
+{% block content %}
+    {% if article %}
+        <div class="album py-5 bg-light">
+            <div class="container" style="background-color: #f1eee8">
+                <br>
+                <div class="row">
+                    {% for article in article %}
+                        <div class="col-md-4">
+                            <div class="card mb-4 shadow-sm">
+
+                                <img class="bd-placeholder-img card-img-top" focusable="false" role="img"
+                                     width="100%" height="100%" src="{{ article.article_poster.url }}">
+
+
+                                <div class="card-body">
+
+                                    <p class="card-text">{{ article.article_title }}
+                                        {% if article.was_published_recently %}
+                                            <span class="badge badge-secondary">Новая статья!</span></p>
+                                        {% endif %}
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="btn-group">
+                                            <form action="{% url 'articles:article' article.id %}">
+                                                <button type="submit" class="btn btn-sm btn-outline-secondary">
+                                                    Посмотреть
+                                                </button>
+                                            </form>
+                                        </div>
+                                        <small class="text-muted">{{ article.article_date }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <br>
+    {% else %}
+        <h1>Статей нет...</h1>
+    {% endif %}
+{% endblock %}

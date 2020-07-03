@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+
+{% block title %}Написать статью{% endblock %}
+
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <div class="container">
+        <div class="form-group align-items-center">
+            <form action="{% url 'articles:new_article_public' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <br>
+                <label for="exampleFormControlFile1">Добавьте заголовок</label>
+                <input name="title_article" maxlength="180" class="form-control">
+                <br>
+                {{ form_article.bar }}
+
+                <label for="exampleFormControlFile1">Добавьте постер</label>
+                <input type="file" class="form-control-file" name="article_poster"
+                       accept="image/*">
+                <br>
+                <button type="submit" class="btn btn-primary" value="Сохранить" name="save">Опубликовать</button>
+            </form>
+
+        </div>
+    {% else %}
+        <div class="jumbotron">
+            <h1 class="display-4">Авторизуйтесь, чтобы написать статью</h1>
+            <p class="lead"></p>
+            <hr class="my-4">
+
+            <p class="lead">
+                <a class="btn btn-primary btn-lg" href="{% url 'login' %}?next={{ request.path }}"
+                   role="button">Войти под своим логином</a>
+                <a class="btn btn-primary btn-lg" href="{% url 'auth:reg' %}?next={{ request.path }}"
+                   role="button">Зарегистрироваться</a>
+                <a class="btn btn-primary btn-lg" href="#" role="button">Зарегистрироваться</a>
+            </p>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}

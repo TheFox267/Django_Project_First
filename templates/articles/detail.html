@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Статья: {{ article.article_title|safe }}{% endblock %}
+
+{% block content %}
+    <main role="main" class="flex-shrink-0">
+
+        <!-- Begin page content -->
+
+        <div class="container" style="background-color: #F1EEE8">
+            <h1 class="mt-5">{{ article.article_title|safe }}
+
+
+
+                {% if article.was_published_recently %}
+                    <span class="badge badge-secondary">
+                    Новая статья!
+                    </span>
+
+                {% endif %}
+
+
+            </h1>
+            <div class="row">
+                <div class="col">
+                    <p class="lead">
+
+                        <strong>
+
+                            Автор: <a style="color: #212529"
+                                      href="{% url 'userprofile:user_page' article.article_author.id %}"> {{ article.article_author }}</a>
+
+                        </strong>
+
+                        Дата публикации: {{ article.article_date }}
+
+                        <script src="https://yastatic.net/es5-shims/0.0.2/es5-shims.min.js"></script>
+
+                        <script src="https://yastatic.net/share2/share.js"></script>
+
+                    <div class="ya-share2"
+                         data-services="vkontakte,facebook,odnoklassniki,twitter,viber,whatsapp,telegram">
+
+                    </div>
+                </div>
+
+            </div>
+
+
+            <p>{{ article.article_text|safe }}</p>
+            <br>
+            {% if request.user.is_authenticated %}
+                <form action="{% url 'articles:add_like' article.id %}" method="post">
+                    {% csrf_token %}
+
+                    {% if is_liked %}
+                        <a href="{% url 'articles:add_like'  article.id %}"><img
+                                style="min-width: 40px;min-height: 40px;"
+                                src="{% static 'articles/images/like_push.svg' %}"
+                                alt="dislike"> </a>
+                    {% else %}
+                        <a href="{% url 'articles:add_like' article.id %}"> <img
+                                style="min-width: 40px;min-height: 40px;"
+                                src="{% static 'articles/images/like_svg.svg' %}"
+                                alt="like"></a>
+
+
+                    {% endif %}
+                    <br>
+                    <strong>Like: {{ total_likes|safe }}</strong>
+                </form>
+                <br>
+            {% else %}
+                <div class="jumbotron">
+                    <h1 class="display-4">Авторизуйтесь, чтобы поставить оценку</h1>
+                    <p class="lead"></p>
+                    <hr class="my-4">
+
+                    <p class="lead">
+                        <a class="btn btn-primary btn-lg" href="{% url 'login' %}?next={{ request.path }}"
+                           role="button">Войти</a>
+                        <a class="btn btn-primary btn-lg" href="{% url 'auth:reg' %}?next={{ request.path }}"
+                           role="button">Зарегистрироваться</a>
+                    </p>
+                </div>
+                <br>
+            {% endif %}
+        </div>
+
+    </main>
+
+    <footer class="footer mt-auto py-3">
+        <div class="container" style="background-color:#F1EEE8;">
+
+            {% if latest_comments_list %}
+                {% for c in latest_comments_list %}
+                    <h5 class="text">Комментарии</h5>
+                    <p>
+
+                        <strong>
+                            <a href="{% url 'userprofile:user_page' c.comment_author.id %}"
+                               style="color: #212529"> {{ c.comment_author }}</a>
+                        </strong>
+
+                        <br>
+
+                        {{ c.comment_text|safe }}
+
+                    </p>
+
+
+                {% endfor %}
+
+            {% else %}
+                <h5>Комментариев нет, оставьте его первым!</h5>
+            {% endif %}
+
+            {# Форма для комментария #}
+
+            {% if user.is_authenticated %}
+                <h6>Оставить комментарий</h6>
+                <form action="{% url 'articles:leave_comment'  article.id %}" method="post" class="form-signin">
+
+                    {% csrf_token %}
+
+                    <div class="container">
+                        {{ form.foo }}
+                    </div>
+                    <br>
+                    <div class="button-container">
+                        <button type="submit" class="btn btn-info allicon">
+                            Оставить комментарий
+                        </button>
+                    </div>
+
+                </form>
+
+            {% else %}
+                <div class="jumbotron">
+                    <h1 class="display-4">Авторизуйтесь, чтобы принять участие в обсуждении.</h1>
+                    <p class="lead"></p>
+                    <hr class="my-4">
+
+                    <p class="lead">
+                        <a class="btn btn-primary btn-lg" href="{% url 'login' %}?next={{ request.path }}"
+                           role="button">Войти</a>
+                        <a class="btn btn-primary btn-lg" href="{% url 'auth:reg' %}?next={{ request.path }}"
+                           role="button">Зарегистрироваться</a>
+                    </p>
+                </div>
+
+
+            {% endif %}
+            <br>
+        </div>
+
+    </footer>
+{% endblock %}
