@@ -16,7 +16,6 @@ def index(request):
 
 def detail(request, article_id):
     try:
-        user = User.objects.get(id=request.user.id)
         article = Article.objects.get(id=article_id)
     except:
         return Http404('Статья не найдена')

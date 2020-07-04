@@ -18,8 +18,9 @@ def visible_user_page(request, user_id):
     """Отобразить профиль пользователя с его информацией для всех пользователей"""
     user = User.objects.get(id=user_id)
     current_article = Article.objects.filter(article_author=user_id)
+    liked_article = Article.objects.filter(likes=user.id)
 
-    return render(request, 'userprofile/profile_user_page.html', {'user': user, 'current_article': current_article, 'current_user': request.user.id})
+    return render(request, 'userprofile/profile_user_page.html', {'user': user, 'current_article': current_article, 'current_user': request.user.id, 'liked_article': liked_article})
 
 
 def update_info(request, user_id):
