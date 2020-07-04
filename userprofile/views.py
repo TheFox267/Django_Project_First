@@ -36,4 +36,4 @@ def update_info(request, user_id):
     except:
         user.profile.avatar = user.profile.avatar
     user.save()
-    return HttpResponseRedirect(reverse('userprofile:profile_page', args=(user_id,)))
+    return HttpResponseRedirect(reverse('userprofile:user_page', args=(user_id,)))
